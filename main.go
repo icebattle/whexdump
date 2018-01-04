@@ -66,9 +66,9 @@ func printableChar(mychar byte) byte {
 	if mychar > 31 && mychar < 127 {
 		return mychar
 	}
-	if mychar > 127 && mychar < 255 {
-		return mychar
-	}
+	//	if mychar > 127 && mychar < 255 {
+	//		return mychar
+	//	}
 	return 46
 }
 
