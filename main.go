@@ -22,9 +22,8 @@ func main() {
 		os.Exit(1)
 	}
 
-
 	if *lines == 0 {
-		*lines = math.MaxInt64
+		*lines = math.MaxInt32
 	} else {
 		if *lines < 0 {
 			*lines = *lines * (-1)
