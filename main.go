@@ -7,16 +7,22 @@ import (
 	"os"
 )
 
-const APPVERSION = "whexdump version 1.1/2018"
+const APPVERSION = "v1.1/2018"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPFILENAME = "name of file to be dumped"
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
-
+const HELPVERSIONSTRING = "print the current version"
 func main() {
 
 	fileName := flag.String("f", "", HELPFILENAME)
 	lines := flag.Int("c", 0, HELPLINES)
+	version := flag.Bool("v", false, HELPVERSIONSTRING)
 	flag.Parse()
+
+	if *version {
+		fmt.Println(APPVERSION)
+		os.Exit(0)
+	}
 
 	if *fileName == "" {
 		usage()
@@ -87,5 +93,5 @@ func check(e error) {
 }
 
 func usage() {
-	fmt.Println(fmt.Sprintf("%s: Usage: whexdump -f filename -c lines-to-dump", APPVERSION))
+	fmt.Println("Usage: whexdump -f filename -c lines-to-dump")
 }
