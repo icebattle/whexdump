@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.5/2019"
+const APPVERSION = "v1.6/2019"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPFILENAME = "name of file to be dumped"
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
