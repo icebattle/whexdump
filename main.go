@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.6.22/2022"
+const APPVERSION = "v1.7.0/2023"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPFILENAME = "name of file to be dumped"
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
@@ -31,7 +31,7 @@ func main() {
 	}
 
 	if *lines == 0 {
-		*lines = math.MaxInt32
+		*lines = math.MaxInt64
 	} else {
 		if *lines < 0 {
 			*lines = *lines * (-1)
@@ -56,6 +56,8 @@ func dumpFile(fileName string, lines int) {
 			if numread < LINEBYTES {
 				lines = 0
 			}
+		} else {
+			break
 		}
 	}
 	f.Close()
