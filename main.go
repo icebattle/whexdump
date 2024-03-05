@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.8.1/2024"
+const APPVERSION = "v1.8.2/2024"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPFILENAME = "name of file to be dumped"
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
@@ -61,7 +61,6 @@ func dumpFile(fileName string, lines int) {
 			break
 		}
 	}
-	//f.Close()
 }
 
 func dumpLine(offset int, numread int, data []byte) {
@@ -83,7 +82,8 @@ func dumpLine(offset int, numread int, data []byte) {
 		}
 	}
 	dataLine = fmt.Sprintf("%s|", dataLine)
-	fmt.Println(fmt.Sprintf("%s%s", line, dataLine))
+
+	fmt.Printf("%s%s\n", line, dataLine)
 }
 
 func printableChar(mychar byte) byte {
