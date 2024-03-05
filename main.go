@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.8.0/2024"
+const APPVERSION = "v1.8.1/2024"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPFILENAME = "name of file to be dumped"
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
@@ -43,6 +43,7 @@ func main() {
 func dumpFile(fileName string, lines int) {
 	f, err := os.Open(fileName)
 	check(err)
+	defer f.Close()
 
 	buff := make([]byte, LINEBYTES)
 
@@ -60,7 +61,7 @@ func dumpFile(fileName string, lines int) {
 			break
 		}
 	}
-	f.Close()
+	//f.Close()
 }
 
 func dumpLine(offset int, numread int, data []byte) {
