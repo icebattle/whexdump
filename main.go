@@ -8,10 +8,18 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.8.20/2026"
+const APPVERSION = "v1.9.20/2026"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
 const HELPVERSIONSTRING = "print the current version"
+
+const (
+	colorReset     = "\033[0m"
+	colorOffset    = "\033[33m" // yellow
+	colorSep       = "\033[90m" // dark gray
+	colorPrintable = "\033[96m" // bright cyan
+	colorDot       = "\033[90m" // dark gray
+)
 
 func main() {
 
@@ -50,14 +58,23 @@ func main() {
 	}
 }
 
+func isTerminal() bool {
+	stat, err := os.Stdout.Stat()
+	if err != nil {
+		return false
+	}
+	return (stat.Mode() & os.ModeCharDevice) != 0
+}
+
 func dump(r io.Reader, lines int) {
+	useColor := isTerminal()
 	buff := make([]byte, LINEBYTES)
 
 	for i := 0; i < lines; i++ {
 		numread, err := r.Read(buff)
 		if err == nil {
 			offset := i * LINEBYTES
-			dumpLine(offset, numread, buff)
+			dumpLine(offset, numread, buff, useColor)
 
 			if numread < LINEBYTES {
 				lines = 0
@@ -68,16 +85,32 @@ func dump(r io.Reader, lines int) {
 	}
 }
 
-func dumpLine(offset int, numread int, data []byte) {
-	line := fmt.Sprintf("%08X  ", offset)
-	dataLine := "  |"
+func dumpLine(offset int, numread int, data []byte, useColor bool) {
+	var line, dataLine string
+	if useColor {
+		line = fmt.Sprintf("%s%08X%s  ", colorOffset, offset, colorReset)
+		dataLine = fmt.Sprintf("  %s|%s", colorSep, colorReset)
+	} else {
+		line = fmt.Sprintf("%08X  ", offset)
+		dataLine = "  |"
+	}
+
 	for i := 0; i < LINEBYTES; i++ {
 		if i < numread {
 			line = fmt.Sprintf("%s %02X", line, data[i])
 			if i == 7 {
 				line = fmt.Sprintf("%s ", line)
 			}
-			dataLine = fmt.Sprintf("%s%c", dataLine, printableChar(data[i]))
+			ch := printableChar(data[i])
+			if useColor {
+				if isPrintable(data[i]) {
+					dataLine = fmt.Sprintf("%s%s%c%s", dataLine, colorPrintable, ch, colorReset)
+				} else {
+					dataLine = fmt.Sprintf("%s%s%c%s", dataLine, colorDot, ch, colorReset)
+				}
+			} else {
+				dataLine = fmt.Sprintf("%s%c", dataLine, ch)
+			}
 		} else {
 			line = fmt.Sprintf("%s   ", line)
 			if i == 7 {
@@ -86,18 +119,24 @@ func dumpLine(offset int, numread int, data []byte) {
 			dataLine = fmt.Sprintf("%s ", dataLine)
 		}
 	}
-	dataLine = fmt.Sprintf("%s|", dataLine)
+
+	if useColor {
+		dataLine = fmt.Sprintf("%s%s|%s", dataLine, colorSep, colorReset)
+	} else {
+		dataLine = fmt.Sprintf("%s|", dataLine)
+	}
 
 	fmt.Printf("%s%s\n", line, dataLine)
 }
 
+func isPrintable(mychar byte) bool {
+	return mychar > 31 && mychar < 127
+}
+
 func printableChar(mychar byte) byte {
-	if mychar > 31 && mychar < 127 {
+	if isPrintable(mychar) {
 		return mychar
 	}
-	//	if mychar > 127 && mychar < 255 {
-	//		return mychar
-	//	}
 	return 46
 }
 
