@@ -1,0 +1,8 @@
+# Binaries
+main
+whexdumprv64
+*.exe
+
+# Go test/build artifacts
+*.test
+*.out
