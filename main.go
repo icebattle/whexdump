@@ -22,6 +22,12 @@ const (
 )
 
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintln(os.Stderr, "Usage: whexdump [-c lines-to-dump] [filename]")
+		fmt.Fprintln(os.Stderr, "       echo data | whexdump [-c lines-to-dump]")
+		fmt.Fprintln(os.Stderr)
+		flag.PrintDefaults()
+	}
 
 	lines := flag.Int("c", 0, HELPLINES)
 	version := flag.Bool("v", false, HELPVERSIONSTRING)
@@ -52,7 +58,7 @@ func main() {
 		if (stat.Mode() & os.ModeCharDevice) == 0 {
 			dump(os.Stdin, *lines)
 		} else {
-			usage()
+			flag.Usage()
 			os.Exit(1)
 		}
 	}
@@ -149,7 +155,3 @@ func check(e error) {
 	}
 }
 
-func usage() {
-	fmt.Println("Usage: whexdump [-c lines-to-dump] [filename]")
-	fmt.Println("       echo data | whexdump [-c lines-to-dump]")
-}
