@@ -58,7 +58,7 @@ func main() {
 	}
 }
 
-func isTerminal() bool {
+func useColor() bool {
 	if _, set := os.LookupEnv("NO_COLOR"); set {
 		return false
 	}
@@ -70,15 +70,18 @@ func isTerminal() bool {
 }
 
 func dump(r io.Reader, lines int) {
-	useColor := isTerminal()
+	color := useColor()
 	buff := make([]byte, LINEBYTES)
 
 	for i := 0; i < lines; i++ {
 		numread, err := io.ReadFull(r, buff)
 		if numread > 0 {
-			dumpLine(i*LINEBYTES, numread, buff, useColor)
+			dumpLine(i*LINEBYTES, numread, buff, color)
 		}
 		if err != nil {
+			if err != io.EOF && err != io.ErrUnexpectedEOF {
+				fmt.Fprintf(os.Stderr, "whexdump: %v\n", err)
+			}
 			break
 		}
 	}
