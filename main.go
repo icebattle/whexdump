@@ -71,15 +71,11 @@ func dump(r io.Reader, lines int) {
 	buff := make([]byte, LINEBYTES)
 
 	for i := 0; i < lines; i++ {
-		numread, err := r.Read(buff)
-		if err == nil {
-			offset := i * LINEBYTES
-			dumpLine(offset, numread, buff, useColor)
-
-			if numread < LINEBYTES {
-				lines = 0
-			}
-		} else {
+		numread, err := io.ReadFull(r, buff)
+		if numread > 0 {
+			dumpLine(i*LINEBYTES, numread, buff, useColor)
+		}
+		if err != nil {
 			break
 		}
 	}
@@ -142,7 +138,8 @@ func printableChar(mychar byte) byte {
 
 func check(e error) {
 	if e != nil {
-		panic(e)
+		fmt.Fprintf(os.Stderr, "whexdump: %v\n", e)
+		os.Exit(1)
 	}
 }
 
