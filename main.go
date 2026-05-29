@@ -36,7 +36,7 @@ func main() {
 		*lines = math.MaxInt
 	} else {
 		if *lines < 0 {
-			*lines = *lines * (-1)
+			*lines = -*lines
 		}
 	}
 
@@ -136,7 +136,7 @@ func printableChar(mychar byte) byte {
 	if isPrintable(mychar) {
 		return mychar
 	}
-	return 46
+	return '.'
 }
 
 func check(e error) {
