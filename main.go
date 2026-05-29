@@ -40,10 +40,9 @@ func main() {
 
 	if *lines == 0 {
 		*lines = math.MaxInt
-	} else {
-		if *lines < 0 {
-			*lines = -*lines
-		}
+	} else if *lines < 0 {
+		fmt.Fprintf(os.Stderr, "whexdump: -c must be positive\n")
+		os.Exit(1)
 	}
 
 	args := flag.Args()
@@ -82,7 +81,7 @@ func dump(r io.Reader, lines int) {
 	for i := 0; i < lines; i++ {
 		numread, err := io.ReadFull(r, buff)
 		if numread > 0 {
-			dumpLine(i*LINEBYTES, numread, buff, color)
+			dumpLine(os.Stdout, i*LINEBYTES, numread, buff, color)
 		}
 		if err != nil {
 			if err != io.EOF && err != io.ErrUnexpectedEOF {
@@ -93,7 +92,7 @@ func dump(r io.Reader, lines int) {
 	}
 }
 
-func dumpLine(offset int, numread int, data []byte, useColor bool) {
+func dumpLine(w io.Writer, offset int, numread int, data []byte, useColor bool) {
 	var line, dataLine string
 	if useColor {
 		line = fmt.Sprintf("%s%08X%s  ", colorOffset, offset, colorReset)
@@ -134,7 +133,7 @@ func dumpLine(offset int, numread int, data []byte, useColor bool) {
 		dataLine = fmt.Sprintf("%s|", dataLine)
 	}
 
-	fmt.Printf("%s%s\n", line, dataLine)
+	fmt.Fprintf(w, "%s%s\n", line, dataLine)
 }
 
 func isPrintable(mychar byte) bool {
