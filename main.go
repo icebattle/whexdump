@@ -33,7 +33,7 @@ func main() {
 	}
 
 	if *lines == 0 {
-		*lines = math.MaxInt64
+		*lines = math.MaxInt
 	} else {
 		if *lines < 0 {
 			*lines = *lines * (-1)
@@ -59,6 +59,9 @@ func main() {
 }
 
 func isTerminal() bool {
+	if _, set := os.LookupEnv("NO_COLOR"); set {
+		return false
+	}
 	stat, err := os.Stdout.Stat()
 	if err != nil {
 		return false
