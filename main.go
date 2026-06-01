@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const APPVERSION = "v1.9.20/2026"
+const APPVERSION = "v1.9.21/2026"
 const LINEBYTES = 16 // number of bytes to a line
 const HELPLINES = "number of 16-byte lines to dump (0 dumps the whole file)"
 const HELPVERSIONSTRING = "print the current version"
@@ -153,4 +153,3 @@ func check(e error) {
 		os.Exit(1)
 	}
 }
-
